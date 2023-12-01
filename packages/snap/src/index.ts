@@ -1,8 +1,37 @@
+import { Interface } from '@ethersproject/abi';
 import type { OnTransactionHandler } from '@metamask/snaps-sdk';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import type { GetContractResponse } from 'src/types';
 
+const InputDataDecoder = require('ethereum-input-data-decoder');
+
 const apiKey = 'BQPXIFRXIU9GPFUNEVRNT34YNN39WEDPME';
+
+export type DecodedCall = {
+  inputs: any;
+  method: string;
+};
+
+/**
+ *
+ * @param abi
+ * @param input
+ */
+function decodeFunctionCall(abi: any[], input: string): DecodedCall {
+  const decoder = new InputDataDecoder(abi);
+  const decoded = decoder.decodeData(input);
+  let { method } = decoded;
+  if (abi.filter((func) => func.name === method).length > 1) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    method = `${method}(${decoded.types.join(',')})`;
+  }
+  const iface = new Interface(abi);
+  return {
+    method,
+    inputs: iface.decodeFunctionData(method, input),
+  };
+}
+
 export const onTransaction: OnTransactionHandler = async ({
   transaction,
   chainId,
@@ -30,9 +59,13 @@ export const onTransaction: OnTransactionHandler = async ({
         ]),
       };
     }
+    const { method } = decodeFunctionCall(
+      JSON.parse(json.result[0].ABI),
+      txData,
+    );
     return {
       content: panel([
-        heading(`TxAi`),
+        heading(`Method: ${method}`),
         text(`Some Insight ${chainId}`),
         divider(),
         text(sourceCode.slice(0, 100)),
