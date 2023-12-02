@@ -1,13 +1,13 @@
 {
   "version": "0.1.0",
-  "description": "An example Snap written in TypeScript.",
-  "proposedName": "TxAi",
+  "description": "Get details about the contract methods you are sending transaction to",
+  "proposedName": "Contract Method",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "EFLtsN61jv5TOggvGSt9SWFLU1Ed5190Ru84nk5Gqug=",
+    "shasum": "O7LhmRqhkiVYJe1s3XNgRLtYFNdcrlT/8HZVxhsJeNE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
