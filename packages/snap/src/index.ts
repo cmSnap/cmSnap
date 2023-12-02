@@ -35,16 +35,16 @@ function decodeFunctionCall(abi: any[], input: string): DecodedCall {
 /**
  *
  * @param str
- * @param num
+ * @param len
  */
-function truncateString(str: string, num: number) {
-  return str.length > num ? `${str.slice(0, num)}...` : str;
+function truncateString(str: string, len: number) {
+  return str.length > len ? `${str.slice(0, len)}...` : str;
 }
 
 export const onTransaction: OnTransactionHandler = async ({
-                                                            transaction,
-                                                            chainId,
-                                                          }) => {
+  transaction,
+  chainId,
+}) => {
   const txData = transaction?.data;
 
   if (typeof txData !== 'string' || txData === '0x') {
