@@ -2,11 +2,11 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 
 import {
+  Button,
+  Card,
   ConnectButton,
   InstallFlaskButton,
   ReconnectButton,
-  SendHelloButton,
-  Card,
 } from '../components';
 import { defaultSnapOrigin } from '../config';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
@@ -14,7 +14,7 @@ import {
   connectSnap,
   getSnap,
   isLocalSnap,
-  sendHello,
+  sendSetOpenAiApiKeyRequest,
   shouldDisplayReconnectButton,
 } from '../utils';
 
@@ -25,6 +25,7 @@ const Container = styled.div`
   flex: 1;
   margin-top: 7.6rem;
   margin-bottom: 7.6rem;
+
   ${({ theme }) => theme.mediaQueries.small} {
     padding-left: 2.4rem;
     padding-right: 2.4rem;
@@ -49,6 +50,7 @@ const Subtitle = styled.p`
   font-weight: 500;
   margin-top: 0;
   margin-bottom: 0;
+
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -78,6 +80,7 @@ const Notice = styled.div`
   & > * {
     margin: 0;
   }
+
   ${({ theme }) => theme.mediaQueries.small} {
     margin-top: 1.2rem;
     padding: 1.6rem;
@@ -94,6 +97,7 @@ const ErrorMessage = styled.div`
   margin-top: 2.4rem;
   max-width: 60rem;
   width: 100%;
+
   ${({ theme }) => theme.mediaQueries.small} {
     padding: 1.6rem;
     margin-bottom: 1.2rem;
@@ -126,7 +130,7 @@ const Index = () => {
 
   const handleSendHelloClick = async () => {
     try {
-      await sendHello();
+      await sendSetOpenAiApiKeyRequest();
     } catch (error) {
       console.error(error);
       dispatch({ type: MetamaskActions.SetError, payload: error });
@@ -136,11 +140,8 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>cmSnap</Span>
       </Heading>
-      <Subtitle>
-        Get started by editing <code>src/index.ts</code>
-      </Subtitle>
       <CardContainer>
         {state.error && (
           <ErrorMessage>
@@ -192,31 +193,20 @@ const Index = () => {
         )}
         <Card
           content={{
-            title: 'Send Hello message',
+            title: 'Set OpenAI Api Key',
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+              'To get insight on contract method source codes, get an API Key from OpenAI and then press the bellow button.\nhttps://platform.openai.com/api-keys',
             button: (
-              <SendHelloButton
+              <Button
                 onClick={handleSendHelloClick}
                 disabled={!state.installedSnap}
-              />
+              >
+                Set
+              </Button>
             ),
           }}
           disabled={!state.installedSnap}
-          fullWidth={
-            isMetaMaskReady &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
         />
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
       </CardContainer>
     </Container>
   );

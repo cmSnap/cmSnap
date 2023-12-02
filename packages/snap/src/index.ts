@@ -1,8 +1,11 @@
 import { Interface } from '@ethersproject/abi';
-import type { OnTransactionHandler } from '@metamask/snaps-sdk';
+import type {
+  OnRpcRequestHandler,
+  OnTransactionHandler,
+} from '@metamask/snaps-sdk';
 import { divider, heading, panel, text } from '@metamask/snaps-sdk';
 
-import { getMethodExplanation } from './ai';
+import { getMethodExplanation, setOpenAiApiKey } from './ai';
 import { POLYGON_SCAN_API_KEY } from './secrets';
 import type { GetContractResponse, SourceCodeDetails } from './types';
 
@@ -108,4 +111,13 @@ export const onTransaction: OnTransactionHandler = async ({
       ),
     ]),
   };
+};
+
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
+  switch (request.method) {
+    case 'set_openai_api_key':
+      return setOpenAiApiKey();
+    default:
+      throw new Error('Method not found.');
+  }
 };

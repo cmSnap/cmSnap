@@ -26,3 +26,10 @@ export type SourceCodeDetails = {
     [key: string]: { content: string };
   };
 };
+
+export type SnapStoreData = {
+  explorerApiKeys?: {
+    [chainId: string]: string;
+  };
+  openAiApiKey?: string;
+};

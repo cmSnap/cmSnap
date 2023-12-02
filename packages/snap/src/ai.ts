@@ -1,10 +1,6 @@
 import OpenAI from 'openai';
 
-import { OPEN_AI_SECRET_KEY } from './secrets';
-
-const openai = new OpenAI({
-  apiKey: OPEN_AI_SECRET_KEY,
-});
+import { getState, requestSnapPrompt } from './utils';
 
 /**
  *
@@ -13,6 +9,15 @@ const openai = new OpenAI({
  * @param method
  */
 export async function getMethodExplanation(sources: string, method: string) {
+  const { openAiApiKey } = await getState();
+
+  if (!openAiApiKey) {
+    return 'Error: Please first enter an OpenAI Api Key in the dashboard for this feature to work';
+  }
+
+  const openai = new OpenAI({
+    apiKey: openAiApiKey,
+  });
   try {
     const res = await openai.chat.completions.create({
       messages: [
@@ -27,4 +32,26 @@ export async function getMethodExplanation(sources: string, method: string) {
   } catch (error) {
     return String(error);
   }
+}
+
+/**
+ *
+ */
+export async function setOpenAiApiKey() {
+  const openAiApiKey = await requestSnapPrompt('OpenAI Api Key');
+
+  const state = await getState();
+
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'update',
+      newState: {
+        ...state,
+        openAiApiKey,
+      },
+    },
+  });
+
+  return null;
 }
