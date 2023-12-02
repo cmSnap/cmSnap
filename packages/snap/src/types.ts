@@ -20,3 +20,9 @@ export type GetContractResponse = {
     },
   ];
 };
+
+export type SourceCodeDetails = {
+  sources: {
+    [key: string]: { content: string };
+  };
+};

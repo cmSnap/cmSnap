@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "@ethersproject/abi": "^5.7.0",
-    "ethereum-input-data-decoder": "^0.4.2"
+    "ethereum-input-data-decoder": "^0.4.2",
+    "openai": "^4.20.1"
   }
 }
