@@ -4,15 +4,15 @@
   "proposedName": "Contract Method",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/template-snap-monorepo.git"
+    "url": "https://github.com/alimahdiyar/contract-method-snap.git"
   },
   "source": {
-    "shasum": "xx76rZ2l6XPrGbqPxRbzvgqGO6A5Y6Qg9IPFZ93DxF0=",
+    "shasum": "8ZE2IoOGDkvXc1PlcNffc29n5mb2WXkLALVrWTRgdoU=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "snap",
+        "packageName": "cmsnap",
         "registry": "https://registry.npmjs.org/"
       }
     }
