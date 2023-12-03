@@ -11,7 +11,7 @@ import {
   getApiUrlOfExplorer,
   setExplorerApiKey,
 } from './explorer';
-import type { GetContractResponse, SourceCodeDetails } from './types';
+import type { GetContractResponse } from './types';
 import { getState } from './utils';
 
 const InputDataDecoder = require('ethereum-input-data-decoder');
@@ -105,16 +105,19 @@ export const onTransaction: OnTransactionHandler = async ({
       ]),
     };
   }
-  let sourceCodeObj: SourceCodeDetails = { sources: {} };
+  let sourcesRaw: string[] = [];
   try {
-    sourceCodeObj = JSON.parse(sourceCode.slice(1, sourceCode.length - 1));
+    sourcesRaw = Object.values(
+      JSON.parse(sourceCode.slice(1, sourceCode.length - 1)).sources,
+    );
   } catch (_e) {
-    sourceCodeObj = { sources: { source: { content: sourceCode } } };
+    sourcesRaw = sourceCode
+      .split('// File')
+      .map((content) => content.slice(content.indexOf('pragma')));
   }
-  // TODO: minify source codes
-  const sources = Object.values(sourceCodeObj.sources)
-    .filter((source) => source.content.includes(`function ${method}`))
-    .map((source) => `\`\`\`${source.content}\`\`\``)
+  const sources = sourcesRaw
+    .filter((source) => source.includes(`function ${method}(`))
+    .map((source) => `\`\`\`${source}\`\`\``)
     .join('\n');
   const methodExplanation = await getMethodExplanation(sources, method);
   return {
