@@ -1,9 +1,11 @@
 import { Interface } from '@ethersproject/abi';
 import type {
+  JsonRpcRequest,
   OnRpcRequestHandler,
   OnTransactionHandler,
 } from '@metamask/snaps-sdk';
 import { divider, heading, panel, text } from '@metamask/snaps-sdk';
+import type { Component } from '@metamask/snaps-sdk/dist/types/ui/components/panel';
 
 import { getMethodExplanation, setOpenAiApiKey } from './ai';
 import {
@@ -11,7 +13,7 @@ import {
   getApiUrlOfExplorer,
   setExplorerApiKey,
 } from './explorer';
-import type { GetContractResponse } from './types';
+import type { GetContractResponse, SnapStoreData } from './types';
 import { getState } from './utils';
 
 const InputDataDecoder = require('ethereum-input-data-decoder');
@@ -40,15 +42,6 @@ function decodeFunctionCall(abi: any[], input: string): DecodedCall {
   };
 }
 
-/**
- *
- * @param str
- * @param len
- */
-function truncateString(str: string, len: number) {
-  return str.length > len ? `${str.slice(0, len)}...` : str;
-}
-
 export const onTransaction: OnTransactionHandler = async ({
   transaction,
   chainId,
@@ -62,7 +55,7 @@ export const onTransaction: OnTransactionHandler = async ({
   if (!explorerUrl) {
     return null;
   }
-  const { explorerApiKeys } = await getState();
+  const { explorerApiKeys, showArguments } = await getState();
   const explorerApiKey = explorerApiKeys?.[chainIdStr];
   if (!explorerApiKey) {
     return {
@@ -120,24 +113,54 @@ export const onTransaction: OnTransactionHandler = async ({
     .map((source) => `\`\`\`${source}\`\`\``)
     .join('\n');
   const methodExplanation = await getMethodExplanation(sources, method);
+  const panelComponents: Component[] = [
+    heading(`Contract Name`),
+    text(result.ContractName),
+    divider(),
+    heading(`Method`),
+    text(method),
+    divider(),
+    heading(`What it does: (AI generated)`),
+    text(String(methodExplanation)),
+  ];
+  if (showArguments) {
+    panelComponents.push(
+      ...[
+        divider(),
+        heading(`Arguments`),
+        ...names.map((name, i) => text(`${name}: ${String(inputs[i])}`)),
+      ],
+    );
+  }
   return {
-    content: panel([
-      heading(`Contract Name`),
-      text(result.ContractName),
-      divider(),
-      heading(`Method`),
-      text(method),
-      divider(),
-      heading(`What it does: (AI generated)`),
-      text(String(methodExplanation)),
-      divider(),
-      heading(`Arguments`),
-      ...names.map((name, i) =>
-        text(`${name}: ${truncateString(String(inputs[i]), 15)}`),
-      ),
-    ]),
+    content: panel(panelComponents),
   };
 };
+
+/**
+ *
+ * @param request
+ */
+export async function setShowArguments(
+  request: JsonRpcRequest<Record<string, any>>,
+) {
+  const value = Boolean(request?.params?.value);
+
+  const state = await getState();
+  const newState: SnapStoreData = {
+    ...state,
+    showArguments: value,
+  };
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'update',
+      newState,
+    },
+  });
+
+  return null;
+}
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
@@ -145,6 +168,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return setOpenAiApiKey();
     case 'set_explorer_api_key':
       return setExplorerApiKey(request);
+    case 'set_show_arguments':
+      return setShowArguments(request);
+    case 'get_show_arguments':
+      return Boolean((await getState()).showArguments);
     default:
       throw new Error('Method not found.');
   }

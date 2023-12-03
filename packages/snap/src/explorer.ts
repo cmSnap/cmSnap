@@ -855,24 +855,25 @@ export async function setExplorerApiKey(
     throw new Error(`${chainId} not supported yet`);
   }
 
-  const explorerApiKey =
-    (await requestSnapPrompt(`${explorerUrl} Api Key`)) ?? '';
+  const explorerApiKey = await requestSnapPrompt(`${explorerUrl} Api Key`);
 
-  const state = await getState();
-  const newState: SnapStoreData = {
-    ...state,
-    explorerApiKeys: {
-      ...state.explorerApiKeys,
-      [chainId]: explorerApiKey,
-    },
-  };
-  await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: 'update',
-      newState,
-    },
-  });
+  if (explorerApiKey !== null) {
+    const state = await getState();
+    const newState: SnapStoreData = {
+      ...state,
+      explorerApiKeys: {
+        ...state.explorerApiKeys,
+        [chainId]: explorerApiKey,
+      },
+    };
+    await snap.request({
+      method: 'snap_manageState',
+      params: {
+        operation: 'update',
+        newState,
+      },
+    });
+  }
 
   return null;
 }

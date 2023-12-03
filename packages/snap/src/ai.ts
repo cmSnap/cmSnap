@@ -39,20 +39,22 @@ export async function getMethodExplanation(sources: string, method: string) {
  *
  */
 export async function setOpenAiApiKey() {
-  const openAiApiKey = (await requestSnapPrompt('OpenAI Api Key')) ?? '';
+  const openAiApiKey = await requestSnapPrompt('OpenAI Api Key');
 
-  const state = await getState();
-  const newState: SnapStoreData = {
-    ...state,
-    openAiApiKey,
-  };
-  await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: 'update',
-      newState,
-    },
-  });
+  if (openAiApiKey !== null) {
+    const state = await getState();
+    const newState: SnapStoreData = {
+      ...state,
+      openAiApiKey,
+    };
+    await snap.request({
+      method: 'snap_manageState',
+      params: {
+        operation: 'update',
+        newState,
+      },
+    });
+  }
 
   return null;
 }

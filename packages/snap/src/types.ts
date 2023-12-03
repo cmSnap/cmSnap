@@ -28,6 +28,7 @@ export type SourceCodeDetails = {
 };
 
 export type SnapStoreData = {
+  showArguments?: boolean;
   explorerApiKeys?: {
     [chainId: string]: string;
   };
