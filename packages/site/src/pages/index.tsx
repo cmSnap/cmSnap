@@ -228,9 +228,10 @@ const Index = () => {
                 </div>
                 {explorerUrl ? (
                   <div>
-                    For the snap to work on this chain, get an API Key from this
-                    link and then press the bellow button.
-                    <br />
+                    <div style={{ paddingBottom: '10px' }}>
+                      For the snap to work on this chain, get an API Key from
+                      this link and then press the bellow button.
+                    </div>
                     <a
                       href={`https://${explorerUrl}/myapikey`}
                       target="_blank"
@@ -258,8 +259,21 @@ const Index = () => {
         <Card
           content={{
             title: 'Set OpenAI Api Key',
-            description:
-              'To get insight on contract method source codes, get an API Key from OpenAI and then press the bellow button.\nhttps://platform.openai.com/api-keys',
+            description: (
+              <div>
+                <div style={{ paddingBottom: '10px' }}>
+                  To get insight on contract method source codes, get an API Key
+                  from OpenAI and then press the bellow button.
+                </div>
+                <a
+                  href="https://platform.openai.com/api-keys"
+                  target="_blank"
+                  style={{ color: 'white' }}
+                >
+                  https://platform.openai.com/api-keys
+                </a>
+              </div>
+            ),
             button: (
               <Button
                 onClick={handleSetOpenAiApiKeyClick}
