@@ -75,4 +75,20 @@ export const sendSetOpenAiApiKeyRequest = async (): Promise<any> => {
     },
   });
 };
+export const sendSetExplorerApiKeyRequest = async (
+  chainId: string,
+): Promise<any> => {
+  return window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: {
+      snapId: defaultSnapOrigin,
+      request: {
+        method: 'set_explorer_api_key',
+        params: {
+          chainId,
+        },
+      },
+    },
+  });
+};
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

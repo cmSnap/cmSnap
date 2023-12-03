@@ -6,8 +6,13 @@ import type {
 import { divider, heading, panel, text } from '@metamask/snaps-sdk';
 
 import { getMethodExplanation, setOpenAiApiKey } from './ai';
-import { POLYGON_SCAN_API_KEY } from './secrets';
+import {
+  explorerUrls,
+  getApiUrlOfExplorer,
+  setExplorerApiKey,
+} from './explorer';
 import type { GetContractResponse, SourceCodeDetails } from './types';
+import { getState } from './utils';
 
 const InputDataDecoder = require('ethereum-input-data-decoder');
 
@@ -49,22 +54,40 @@ export const onTransaction: OnTransactionHandler = async ({
   chainId,
 }) => {
   const txData = transaction?.data;
-
-  if (typeof txData !== 'string' || txData === '0x') {
+  const chainIdStr = chainId.split(':')[1];
+  if (typeof txData !== 'string' || txData === '0x' || !chainIdStr) {
     return null;
   }
-  if (!chainId.endsWith('137')) {
+  const explorerUrl = explorerUrls[chainIdStr];
+  if (!explorerUrl) {
+    return null;
+  }
+  const { explorerApiKeys } = await getState();
+  const explorerApiKey = explorerApiKeys?.[chainIdStr];
+  if (!explorerApiKey) {
     return {
-      content: panel([heading(`Only on polygon`)]),
+      content: panel([
+        heading(
+          `Please first provide Api Key for ${explorerUrl} in the dashboard`,
+        ),
+      ]),
     };
   }
   const contractDataResponse = await fetch(
-    `https://api.polygonscan.com/api?module=contract&action=getsourcecode&address=${transaction.to}&apikey=${POLYGON_SCAN_API_KEY}`,
+    `${getApiUrlOfExplorer(
+      explorerUrl,
+    )}/api?module=contract&action=getsourcecode&address=${
+      transaction.to
+    }&apikey=${explorerApiKey}`,
   );
   let json: GetContractResponse = await contractDataResponse.json();
   while (json.result[0]?.Proxy === '1') {
     const contractImplementationResponse = await fetch(
-      `https://api.polygonscan.com/api?module=contract&action=getsourcecode&address=${json.result[0].Implementation}&apikey=${POLYGON_SCAN_API_KEY}`,
+      `${getApiUrlOfExplorer(
+        explorerUrl,
+      )}/api?module=contract&action=getsourcecode&address=${
+        json.result[0].Implementation
+      }&apikey=${explorerApiKey}`,
     );
     json = await contractImplementationResponse.json();
   }
@@ -117,6 +140,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'set_openai_api_key':
       return setOpenAiApiKey();
+    case 'set_explorer_api_key':
+      return setExplorerApiKey(request);
     default:
       throw new Error('Method not found.');
   }

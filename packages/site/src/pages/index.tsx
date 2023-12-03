@@ -1,6 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
+import { explorerUrls } from '../../../snap/src/explorer';
 import {
   Button,
   Card,
@@ -14,6 +15,7 @@ import {
   connectSnap,
   getSnap,
   isLocalSnap,
+  sendSetExplorerApiKeyRequest,
   sendSetOpenAiApiKeyRequest,
   shouldDisplayReconnectButton,
 } from '../utils';
@@ -128,9 +130,20 @@ const Index = () => {
     }
   };
 
-  const handleSendHelloClick = async () => {
+  const handleSetOpenAiApiKeyClick = async () => {
     try {
       await sendSetOpenAiApiKeyRequest();
+    } catch (error) {
+      console.error(error);
+      dispatch({ type: MetamaskActions.SetError, payload: error });
+    }
+  };
+
+  const [chainId, setChainId] = useState('1');
+  const explorerUrl = useMemo(() => explorerUrls[chainId], [chainId]);
+  const handleSetExplorerApiKeyRequest = async () => {
+    try {
+      await sendSetExplorerApiKeyRequest(chainId);
     } catch (error) {
       console.error(error);
       dispatch({ type: MetamaskActions.SetError, payload: error });
@@ -193,12 +206,63 @@ const Index = () => {
         )}
         <Card
           content={{
+            title: 'Set Blockchain Explorer Api Key',
+            description: (
+              <div>
+                <div style={{ display: 'flex', marginBottom: '10px' }}>
+                  <label style={{ marginTop: '3px' }}>chainId:</label>
+                  <input
+                    id="chainId"
+                    type="number"
+                    style={{
+                      width: '60px',
+                      height: '20px',
+                      marginLeft: '5px',
+                      textAlign: 'center',
+                    }}
+                    value={chainId}
+                    onChange={(changeEvent) =>
+                      setChainId(changeEvent.target.value)
+                    }
+                  />
+                </div>
+                {explorerUrl ? (
+                  <div>
+                    For the snap to work on this chain, get an API Key from this
+                    link and then press the bellow button.
+                    <br />
+                    <a
+                      href={`https://${explorerUrl}/myapikey`}
+                      target="_blank"
+                      style={{ color: 'white' }}
+                    >
+                      https://{explorerUrl}/myapikey
+                    </a>
+                  </div>
+                ) : (
+                  <div>chain not supported</div>
+                )}
+              </div>
+            ),
+            button: (
+              <Button
+                onClick={handleSetExplorerApiKeyRequest}
+                disabled={!state.installedSnap}
+              >
+                Set
+              </Button>
+            ),
+          }}
+          disabled={!state.installedSnap}
+        />
+        <Card
+          content={{
             title: 'Set OpenAI Api Key',
             description:
               'To get insight on contract method source codes, get an API Key from OpenAI and then press the bellow button.\nhttps://platform.openai.com/api-keys',
             button: (
               <Button
-                onClick={handleSendHelloClick}
+                onClick={handleSetOpenAiApiKeyClick}
                 disabled={!state.installedSnap}
               >
                 Set
