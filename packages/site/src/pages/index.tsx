@@ -49,17 +49,6 @@ const Span = styled.span`
   color: ${(props) => props.theme.colors.primary?.default};
 `;
 
-const Subtitle = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.large};
-  font-weight: 500;
-  margin-top: 0;
-  margin-bottom: 0;
-
-  ${({ theme }) => theme.mediaQueries.small} {
-    font-size: ${({ theme }) => theme.fontSizes.text};
-  }
-`;
-
 const CardContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -69,26 +58,6 @@ const CardContainer = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 1.5rem;
-`;
-
-const Notice = styled.div`
-  background-color: ${({ theme }) => theme.colors.background?.alternative};
-  border: 1px solid ${({ theme }) => theme.colors.border?.default};
-  color: ${({ theme }) => theme.colors.text?.alternative};
-  border-radius: ${({ theme }) => theme.radii.default};
-  padding: 2.4rem;
-  margin-top: 2.4rem;
-  max-width: 60rem;
-  width: 100%;
-
-  & > * {
-    margin: 0;
-  }
-
-  ${({ theme }) => theme.mediaQueries.small} {
-    margin-top: 1.2rem;
-    padding: 1.6rem;
-  }
 `;
 
 const ErrorMessage = styled.div`
@@ -154,7 +123,11 @@ const Index = () => {
 
   const [showArguments, setShowArguments] = useState(false);
   useEffect(() => {
-    sendGetShowArgumentsRequest().then((val) => setShowArguments(val));
+    sendGetShowArgumentsRequest()
+      .then((val) => setShowArguments(val))
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   const handleSetShowArgumentsRequest = async (value: boolean) => {
     try {
