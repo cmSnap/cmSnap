@@ -13,7 +13,11 @@ import {
   getApiUrlOfExplorer,
   setExplorerApiKey,
 } from './explorer';
-import type { GetContractResponse, SnapStoreData } from './types';
+import type {
+  GetContractResponse,
+  SnapStoreData,
+  SourceCodeDetails,
+} from './types';
 import { getState } from './utils';
 
 const InputDataDecoder = require('ethereum-input-data-decoder');
@@ -107,20 +111,46 @@ export const onTransaction: OnTransactionHandler = async ({
       ]),
     };
   }
-  let sourcesRaw: string[] = [];
+  let sourceFiles: string[] = [];
   try {
-    sourcesRaw = Object.values(
-      JSON.parse(sourceCode.slice(1, sourceCode.length - 1)).sources,
+    const sourceData: SourceCodeDetails = JSON.parse(
+      sourceCode.slice(1, sourceCode.length - 1),
     );
+    sourceFiles = Object.values(sourceData.sources).map((scc) => scc.content);
   } catch (_e) {
-    sourcesRaw = sourceCode
+    sourceFiles = sourceCode
       .split('// File')
       .map((content) => content.slice(content.indexOf('pragma')));
   }
-  const sources = sourcesRaw
-    .filter((source) => source.includes(`function ${method}(`))
-    .map((source) => `\`\`\`${source}\`\`\``)
-    .join('\n');
+  const sources: string[] = [];
+  sourceFiles.forEach((source) => {
+    if (!source.includes(`function ${method}(`)) {
+      return;
+    }
+    let index = 0;
+    while (index < source.length) {
+      let slice = source.slice(index);
+      const interfaceIndex = slice
+        .slice(slice.startsWith('interface ') ? 1 : 0)
+        .indexOf('interface ');
+      const contractIndex = slice
+        .slice(slice.startsWith('contract ') ? 1 : 0)
+        .indexOf('contract ');
+      let i = Math.min(interfaceIndex, contractIndex);
+      if (interfaceIndex === -1) {
+        i = contractIndex;
+      }
+      if (contractIndex === -1) {
+        i = interfaceIndex;
+      }
+      const newIndex = index + (i === -1 ? slice.length : i);
+      slice = source.slice(index, newIndex);
+      if (slice.includes(`function ${method}(`)) {
+        sources.push(slice);
+      }
+      index = newIndex;
+    }
+  });
   const methodExplanation = await getMethodExplanation(sources, method);
   const panelComponents: Component[] = [
     heading(`Contract Name`),

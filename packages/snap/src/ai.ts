@@ -9,7 +9,7 @@ import { getState, requestSnapPrompt } from './utils';
  * @param methdo
  * @param method
  */
-export async function getMethodExplanation(sources: string, method: string) {
+export async function getMethodExplanation(sources: string[], method: string) {
   const { openAiApiKey } = await getState();
 
   if (!openAiApiKey) {
@@ -24,7 +24,9 @@ export async function getMethodExplanation(sources: string, method: string) {
       messages: [
         {
           role: 'user',
-          content: `Explain what does the \`${method}\` function do in this contract in maximum 20 words for a non technical person. Also if the method looks like a scam, tell the reason, otherwise don't say anything about it:\n${sources}`,
+          content: `Explain what does the \`${method}\` function do in this contract in maximum 20 words for a non technical person. If the method looks like a scam, tell the reason, otherwise don't say anything about it:\n${sources
+            .map((source) => `\`\`\`${source}\`\`\``)
+            .join('\n')}`,
         },
       ],
       model: 'gpt-4',
