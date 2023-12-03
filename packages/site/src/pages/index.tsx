@@ -51,6 +51,20 @@ const Span = styled.span`
   color: ${(props) => props.theme.colors.primary?.default};
 `;
 
+const Subtitle = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.large};
+  font-weight: 500;
+  margin: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: center;
+  max-width: 600px;
+
+  ${({ theme }) => theme.mediaQueries.small} {
+    font-size: ${({ theme }) => theme.fontSizes.text};
+  }
+`;
+
 const CardContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -194,6 +208,10 @@ const Index = () => {
       <Heading>
         Welcome to <Span>cmSnap</Span>
       </Heading>
+      <Subtitle>
+        cmSnap gives you details about the contract methods you are sending
+        transaction to, without sending your transaction data anywhere!
+      </Subtitle>
       <CardContainer>
         {state.error && (
           <ErrorMessage>
