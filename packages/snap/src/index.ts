@@ -48,8 +48,17 @@ export const onTransaction: OnTransactionHandler = async ({
 }) => {
   const txData = transaction?.data;
   const chainIdStr = chainId.split(':')[1];
-  if (typeof txData !== 'string' || txData === '0x' || !chainIdStr) {
-    return null;
+  if (!chainIdStr) {
+    return {
+      content: panel([heading(`chainId not provided`)]),
+    };
+  }
+  if (typeof txData !== 'string' || txData === '0x') {
+    return {
+      content: panel([
+        heading(`This transaction does not call a contract's method`),
+      ]),
+    };
   }
   const explorerUrl = explorerUrls[chainIdStr];
   if (!explorerUrl) {
