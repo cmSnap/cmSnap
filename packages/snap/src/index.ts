@@ -8,11 +8,8 @@ import { divider, heading, panel, text } from '@metamask/snaps-sdk';
 import type { Component } from '@metamask/snaps-sdk/dist/types/ui/components/panel';
 
 import { getMethodExplanation, setOpenAiApiKey } from './ai';
-import {
-  explorerUrls,
-  getApiUrlOfExplorer,
-  setExplorerApiKey,
-} from './explorer';
+import { getApiUrlOfExplorer, setExplorerApiKey } from './explorer';
+import { explorerUrls } from './explorerUrls';
 import type {
   GetContractResponse,
   SnapStoreData,

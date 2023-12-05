@@ -57,11 +57,5 @@
       "@lavamoat/preinstall-always-fail": false,
       "sharp": true
     }
-  },
-  "dependencies": {
-    "@ethersproject/abi": "^5.7.0",
-    "ethereum-input-data-decoder": "^0.4.2",
-    "openai": "^4.20.1",
-    "web3": "^4.2.2"
   }
 }
