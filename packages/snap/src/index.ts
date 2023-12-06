@@ -55,13 +55,14 @@ export const onTransaction: OnTransactionHandler = async ({
       ]),
     };
   }
-  const chainIdStr = chainId.split(':')[1];
-  if (!chainIdStr) {
+  const chainIdHex = chainId.split(':')[1];
+  if (!chainIdHex) {
     return {
       content: panel([heading(`chainId not provided`)]),
     };
   }
-  const explorerUrl = explorerUrls[String(parseInt(chainIdStr, 16))];
+  const chainIdStr = String(parseInt(chainIdHex, 16));
+  const explorerUrl = explorerUrls[chainIdStr];
   if (!explorerUrl) {
     return {
       content: panel([heading(`Chain ${chainId} explorer not supported`)]),
