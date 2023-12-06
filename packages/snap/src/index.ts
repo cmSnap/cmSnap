@@ -48,12 +48,6 @@ export const onTransaction: OnTransactionHandler = async ({
   chainId,
 }) => {
   const txData = transaction?.data;
-  const chainIdStr = chainId.split(':')[1];
-  if (!chainIdStr) {
-    return {
-      content: panel([heading(`chainId not provided`)]),
-    };
-  }
   if (typeof txData !== 'string' || txData === '0x') {
     return {
       content: panel([
@@ -61,9 +55,17 @@ export const onTransaction: OnTransactionHandler = async ({
       ]),
     };
   }
-  const explorerUrl = explorerUrls[chainIdStr];
+  const chainIdStr = chainId.split(':')[1];
+  if (!chainIdStr) {
+    return {
+      content: panel([heading(`chainId not provided`)]),
+    };
+  }
+  const explorerUrl = explorerUrls[String(parseInt(chainIdStr, 16))];
   if (!explorerUrl) {
-    return null;
+    return {
+      content: panel([heading(`Chain ${chainId} explorer not supported`)]),
+    };
   }
   const { explorerApiKeys, showArguments } = await getState();
   const explorerApiKey = explorerApiKeys?.[chainIdStr];
