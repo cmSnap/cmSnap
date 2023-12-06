@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { explorerUrls } from '../../../snap/src/explorerUrls';
+import { explorerUrls } from '../config/explorerUrls';
 
 /**
  *

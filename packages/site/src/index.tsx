@@ -1,5 +1,7 @@
-import type { FunctionComponent, ReactNode } from 'react';
-import { createContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import { App } from 'src/App';
 import { ThemeProvider } from 'styled-components';
 
 import { dark, light } from './config/theme';
@@ -16,7 +18,7 @@ export const ToggleThemeContext = createContext<ToggleTheme>(
   (): void => undefined,
 );
 
-export const Root: FunctionComponent<RootProps> = ({ children }) => {
+const Index = () => {
   const [darkTheme, setDarkTheme] = useState(getThemePreference());
 
   const toggleTheme: ToggleTheme = () => {
@@ -27,8 +29,19 @@ export const Root: FunctionComponent<RootProps> = ({ children }) => {
   return (
     <ToggleThemeContext.Provider value={toggleTheme}>
       <ThemeProvider theme={darkTheme ? dark : light}>
-        <MetaMaskProvider>{children}</MetaMaskProvider>
+        <MetaMaskProvider>
+          <App />
+        </MetaMaskProvider>
       </ThemeProvider>
     </ToggleThemeContext.Provider>
   );
 };
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement,
+);
+root.render(
+  <React.StrictMode>
+    <Index />
+  </React.StrictMode>,
+);

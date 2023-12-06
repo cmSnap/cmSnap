@@ -7,13 +7,7 @@ import { Button } from './Buttons';
 import { Card } from './Card';
 import { CardContainer } from './CardContainer';
 
-/**
- *
- * @param props
- * @param props.onClick
- * @param props.state
- */
-export function SampleScam() {
+export const SampleScam = () => {
   const [state] = useContext(MetaMaskContext);
 
   const sendUSDT = async () => {
@@ -90,4 +84,4 @@ export function SampleScam() {
       />
     </CardContainer>
   );
-}
+};
