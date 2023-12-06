@@ -88,7 +88,7 @@ const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
 
   const isMetaMaskReady = isLocalSnap(defaultSnapOrigin)
-    ? state.isFlask
+    ? state.isMetaMask
     : state.snapsDetected;
 
   const handleConnectClick = async () => {

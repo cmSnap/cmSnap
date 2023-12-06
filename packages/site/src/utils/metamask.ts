@@ -53,7 +53,7 @@ export const detectSnaps = async () => {
  *
  * @returns True if the MetaMask version is Flask, false otherwise.
  */
-export const isFlask = async () => {
+export const isMetaMask = async () => {
   const provider = window.ethereum;
 
   try {
@@ -61,9 +61,7 @@ export const isFlask = async () => {
       method: 'web3_clientVersion',
     });
 
-    const isFlaskDetected = (clientVersion as string[])?.includes('flask');
-
-    return Boolean(provider && isFlaskDetected);
+    return Boolean(provider && clientVersion);
   } catch {
     return false;
   }

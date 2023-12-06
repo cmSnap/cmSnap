@@ -72,9 +72,9 @@ const ConnectedIndicator = styled.div`
 `;
 
 export const InstallFlaskButton = () => (
-  <Link href="https://metamask.io/flask/" target="_blank">
+  <Link href="https://metamask.io/" target="_blank">
     <FlaskFox />
-    <ButtonText>Install MetaMask Flask</ButtonText>
+    <ButtonText>Install MetaMask</ButtonText>
   </Link>
 );
 
@@ -107,7 +107,7 @@ export const HeaderButtons = ({
   state: MetamaskState;
   onConnectClick(): unknown;
 }) => {
-  if (!state.isFlask && !state.installedSnap) {
+  if (!state.isMetaMask && !state.installedSnap) {
     return <InstallFlaskButton />;
   }
 

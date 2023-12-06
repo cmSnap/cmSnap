@@ -2,18 +2,18 @@ import type { Dispatch, ReactNode, Reducer } from 'react';
 import { createContext, useEffect, useReducer } from 'react';
 
 import type { Snap } from '../types';
-import { detectSnaps, getSnap, isFlask } from '../utils';
+import { detectSnaps, getSnap, isMetaMask } from '../utils';
 
 export type MetamaskState = {
   snapsDetected: boolean;
-  isFlask: boolean;
+  isMetaMask: boolean;
   installedSnap?: Snap;
   error?: Error;
 };
 
 const initialState: MetamaskState = {
   snapsDetected: false,
-  isFlask: false,
+  isMetaMask: false,
 };
 
 type MetamaskDispatch = { type: MetamaskActions; payload: any };
@@ -31,7 +31,7 @@ export enum MetamaskActions {
   SetInstalled = 'SetInstalled',
   SetSnapsDetected = 'SetSnapsDetected',
   SetError = 'SetError',
-  SetIsFlask = 'SetIsFlask',
+  SetisMetaMask = 'SetisMetaMask',
 }
 
 const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
@@ -47,10 +47,10 @@ const reducer: Reducer<MetamaskState, MetamaskDispatch> = (state, action) => {
         ...state,
         snapsDetected: action.payload,
       };
-    case MetamaskActions.SetIsFlask:
+    case MetamaskActions.SetisMetaMask:
       return {
         ...state,
-        isFlask: action.payload,
+        isMetaMask: action.payload,
       };
     case MetamaskActions.SetError:
       return {
@@ -103,8 +103,8 @@ export const MetaMaskProvider = ({ children }: { children: ReactNode }) => {
 
     const checkIfFlask = async () => {
       dispatch({
-        type: MetamaskActions.SetIsFlask,
-        payload: await isFlask(),
+        type: MetamaskActions.SetisMetaMask,
+        payload: await isMetaMask(),
       });
     };
 
