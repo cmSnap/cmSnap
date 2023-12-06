@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Web3 } from 'web3';
 
-import { USDT_ABI } from '../config/abis';
+import { DEPOSIT_MANAGER_ABI } from '../config/abis';
 import { MetaMaskContext } from '../hooks';
 import { Button } from './Buttons';
 import { Card } from './Card';
@@ -42,21 +42,22 @@ export const SampleScam = () => {
       });
     }
 
-    const tokenAddress = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174';
+    const contractAddress = '0xffb8ed477bc5c2ee3d5d7eb894cbbe9c5167e162';
 
-    const abi = USDT_ABI;
+    const abi = DEPOSIT_MANAGER_ABI;
 
-    const receiver = '0x0000000000000000000000000000000000000000';
-
-    const contract = new web3.eth.Contract(abi, tokenAddress, {
+    const contract = new web3.eth.Contract(abi, contractAddress, {
       from: account,
     });
 
-    const amount = '1';
+    const amount = '1000000000000000';
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    contract?.methods?.transfer(receiver, amount)?.send().catch(console.log);
+    contract?.methods
+      ?.deposit()
+      ?.send({ from: account, value: amount })
+      .catch(console.log);
   };
 
   return (
