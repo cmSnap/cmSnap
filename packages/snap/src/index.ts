@@ -8,7 +8,7 @@ import type { Component } from '@metamask/snaps-sdk/dist/types/ui/components/pan
 import { getMethodExplanation, setOpenAiApiKey } from './ai';
 import {
   decodeFunctionCall,
-  filterSourceFilesWithContextAboutTheMethod,
+  filterSourceCodeSlicesWithContextAboutTheMethod,
 } from './contract';
 import {
   getApiUrlOfExplorer,
@@ -91,7 +91,7 @@ export const onTransaction: OnTransactionHandler = async ({
     };
   }
 
-  const sources = filterSourceFilesWithContextAboutTheMethod(
+  const sources = filterSourceCodeSlicesWithContextAboutTheMethod(
     sourceCode,
     method,
   );

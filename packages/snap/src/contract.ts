@@ -24,16 +24,20 @@ function parseSourceFilesFromSingleTextSourceCode(sourceCode: string) {
     .map((content) => content.slice(content.indexOf('pragma')));
 }
 
-function findNextContractSourceIndexIndex(sourceCodesSlice: string) {
-  const interfaceIndex = sourceCodesSlice
-    .slice(sourceCodesSlice.startsWith('interface ') ? 1 : 0)
+function findNextContractOrInterfaceIndexInSourceFile(
+  sourceFile: string,
+  afterIndex: number,
+) {
+  const sourceFileSlice = sourceFile.slice(afterIndex);
+  const interfaceIndex = sourceFileSlice
+    .slice(sourceFileSlice.startsWith('interface ') ? 1 : 0)
     .indexOf('interface ');
-  const contractIndex = sourceCodesSlice
-    .slice(sourceCodesSlice.startsWith('contract ') ? 1 : 0)
+  const contractIndex = sourceFileSlice
+    .slice(sourceFileSlice.startsWith('contract ') ? 1 : 0)
     .indexOf('contract ');
   if (interfaceIndex === -1) {
     if (contractIndex === -1) {
-      return sourceCodesSlice.length;
+      return sourceFileSlice.length;
     }
     return contractIndex;
   }
@@ -43,7 +47,7 @@ function findNextContractSourceIndexIndex(sourceCodesSlice: string) {
   return Math.min(interfaceIndex, contractIndex);
 }
 
-export function filterSourceFilesWithContextAboutTheMethod(
+export function filterSourceCodeSlicesWithContextAboutTheMethod(
   sourceCode: string,
   method: string,
 ) {
@@ -55,21 +59,22 @@ export function filterSourceFilesWithContextAboutTheMethod(
   }
 
   const sources: string[] = [];
-  sourceFiles.forEach((source) => {
-    if (!source.includes(`function ${method}(`)) {
+  sourceFiles.forEach((sourceFile) => {
+    if (!sourceFile.includes(`function ${method}(`)) {
       return;
     }
     let index = 0;
-    while (index < source.length) {
-      let sourceCodesSlice = source.slice(index);
-      const nextSourceIndex =
-        findNextContractSourceIndexIndex(sourceCodesSlice);
-      const newIndex = index + nextSourceIndex;
-      sourceCodesSlice = source.slice(index, newIndex);
-      if (sourceCodesSlice.includes(`function ${method}(`)) {
-        sources.push(sourceCodesSlice);
+    while (index < sourceFile.length) {
+      const nextContractOrInterfaceIndex =
+        findNextContractOrInterfaceIndexInSourceFile(sourceFile, index);
+      const nextContractOrInterfaceSlice = sourceFile.slice(
+        index,
+        nextContractOrInterfaceIndex,
+      );
+      if (nextContractOrInterfaceSlice.includes(`function ${method}(`)) {
+        sources.push(nextContractOrInterfaceSlice);
       }
-      index = newIndex;
+      index = nextContractOrInterfaceIndex;
     }
   });
   return sources;

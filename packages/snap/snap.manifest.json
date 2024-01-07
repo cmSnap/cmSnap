@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Get details about the contract methods you are sending transaction to",
   "proposedName": "Contract Method",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/alimahdiyar/contract-method-snap.git"
   },
   "source": {
-    "shasum": "FuUVHNnAStzfnpVuV3p7aYsoNzq+ag2RbJbwog4kVBo=",
+    "shasum": "dyreys649/zEGYybygqyaLgnKTtRxDv5wzgOGXIrc6s=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

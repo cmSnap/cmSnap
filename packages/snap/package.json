@@ -1,7 +1,7 @@
 {
   "name": "cmsnap",
-  "version": "0.1.0",
-  "description": "The 'Hello, world!' of MetaMask Snaps, now written in TypeScript.",
+  "version": "0.2.0",
+  "description": "Get details about the contract methods you are sending transaction to",
   "repository": {
     "type": "git",
     "url": "https://github.com/alimahdiyar/contract-method-snap.git"
