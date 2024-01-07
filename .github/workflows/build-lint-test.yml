@@ -88,7 +88,7 @@ jobs:
       - name: Install Google Chrome
         run: yarn install-chrome
       - name: Run e2e tests
-        run: yarn workspace cmsnap run test
+        run: yarn test
       - name: Require clean working directory
         shell: bash
         run: |
