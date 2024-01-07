@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -17,10 +17,8 @@ import {
   connectSnap,
   getSnap,
   isLocalSnap,
-  sendGetShowArgumentsRequest,
   sendSetExplorerApiKeyRequest,
   sendSetOpenAiApiKeyRequest,
-  sendSetShowArgumentsRequest,
   shouldDisplayReconnectButton,
 } from '../utils';
 
@@ -120,24 +118,6 @@ const Index = () => {
   const handleSetExplorerApiKeyRequest = async () => {
     try {
       await sendSetExplorerApiKeyRequest(chainId);
-    } catch (error) {
-      console.error(error);
-      dispatch({ type: MetamaskActions.SetError, payload: error });
-    }
-  };
-
-  const [showArguments, setShowArguments] = useState(false);
-  useEffect(() => {
-    sendGetShowArgumentsRequest()
-      .then((val) => setShowArguments(val))
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-  const handleSetShowArgumentsRequest = async (value: boolean) => {
-    try {
-      await sendSetShowArgumentsRequest(value);
-      setShowArguments(value);
     } catch (error) {
       console.error(error);
       dispatch({ type: MetamaskActions.SetError, payload: error });
@@ -278,24 +258,6 @@ const Index = () => {
                 disabled={!state.installedSnap}
               >
                 Set
-              </Button>
-            ),
-          }}
-          disabled={!state.installedSnap}
-        />
-        <Card
-          content={{
-            title: 'Show Arguments',
-            description:
-              'Show arguments used to call the method in the insights. Suggested for developers',
-            button: (
-              <Button
-                onClick={async () =>
-                  handleSetShowArgumentsRequest(!showArguments)
-                }
-                disabled={!state.installedSnap}
-              >
-                {showArguments ? 'Hide Arguments' : 'Show Arguments'}
               </Button>
             ),
           }}

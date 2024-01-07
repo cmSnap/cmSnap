@@ -10301,7 +10301,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cmsnap@workspace:packages/snap"
   dependencies:
-    "@ethersproject/abi": ^5.7.0
     "@jest/globals": ^29.5.0
     "@metamask/auto-changelog": ^3.4.2
     "@metamask/eslint-config": ^12.0.0

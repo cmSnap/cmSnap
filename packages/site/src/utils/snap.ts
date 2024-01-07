@@ -92,31 +92,4 @@ export const sendSetExplorerApiKeyRequest = async (
   });
 };
 
-export const sendSetShowArgumentsRequest = async (
-  value: boolean,
-): Promise<any> => {
-  return window.ethereum.request({
-    method: 'wallet_invokeSnap',
-    params: {
-      snapId: defaultSnapOrigin,
-      request: {
-        method: 'set_show_arguments',
-        params: {
-          value,
-        },
-      },
-    },
-  });
-};
-export const sendGetShowArgumentsRequest = async (): Promise<any> => {
-  return window.ethereum.request({
-    method: 'wallet_invokeSnap',
-    params: {
-      snapId: defaultSnapOrigin,
-      request: {
-        method: 'get_show_arguments',
-      },
-    },
-  });
-};
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');
