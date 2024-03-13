@@ -27,7 +27,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@metamask/snaps-sdk": "^1.2.0",
+    "@metamask/snaps-sdk": "^3.1.1",
     "buffer": "^6.0.3",
     "ethereum-input-data-decoder": "^0.4.2",
     "openai": "^4.20.1"
